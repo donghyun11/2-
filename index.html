@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8'/>
+	<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src='jquery.zoom.js'></script>
+	<script>
+		$(document).ready(function(){
+			$('#squer').zoom();
+		});
+		// api 저장
+
+      function report() {
+        let name = $('#name').val();
+        let count = $('#count').val();
+        let address = $('#address').val();
+        let phone = $('#phone').val();
+        let card = $('#card').val();
+
+        $.ajax({
+          type: "POST",
+          url: "http://spartacodingclub.shop/order",
+          data: { name_give:name, count_give:count, address_give:address, phone_give:phone, card_give:card },
+          success: function(response){
+            if(response['result'] == 'success'){
+              alert('주문 완료!');
+              window.location.reload();
+            }
+          }
+        })
+      }
+
+      $(document).ready(function(){
+        $('#orders-box').html('');
+        listing();
+      });
+
+      function listing() {
+        $.ajax({
+          type: "GET",
+          url: "http://spartacodingclub.shop/order?item_give=양초",
+          data: {},
+          success: function(response){
+             if (response['result'] == 'success') {
+               let orders = response['orders'];
+               for (let i = 0; i < orders.length; i++) {
+                 make_card(orders[i]['name'],orders[i]['card'],orders[i]['count'],orders[i]['address'],orders[i]['phone'])
+               }
+             } else {
+               alert('기사를 받아오지 못했습니다');
+             }
+          }
+        })
+      }
+
+      function make_card(name,count,address,phone,card) {
+        let temp_html = '<tr>\
+            <td>'+name+'</td>\
+            <td>'+count+'</td>\
+            <td>'+address+'</td>\
+            <td>'+phone+'</td>\
+            <td>'+card+'</td>\
+          </tr>';
+        $('#orders-box').append(temp_html);
+      }
+    
+	</script>
+
+
+
+<link rel = "stylesheet" type = "text/css" href = "index.css"> 
+</head>
+<body>
+	<div id="squer" class='.zoom'> 
+		<img src="lock.jpg" width = "400">
+	</div>
+	 <h1 class="mytitle">
+          추석 명절 어머니를 위한 최고의 선물 
+        </h1>
+        <div class="mytitle">
+          이름: 
+          <input id="name" type="text">
+          <hr>
+          주소: 
+          <input id="address" type="text">
+          <hr>
+          전화번호: 
+          <input id="phone"  type="text">
+          <hr> 
+          카드번호: 
+          <input id="card" type="text">
+          <hr>
+          수량:
+          <input id="count" type="text">
+        </div>
+        <button onclick="report()" class="btn btn-primary">주문하기</button>
+</body>
+</html>
