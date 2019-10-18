@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <link rel = "stylesheet" type = "text/css" href = "index.css">
 	<meta charset='utf-8'/>
 	<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 	<script src='jquery.zoom.js'></script>
 	<script>
 		$(document).ready(function(){
@@ -12,16 +14,16 @@
 		// api 저장
 
       function report() {
-        let name = $('#name').val();
-        let count = $('#count').val();
-        let address = $('#address').val();
-        let phone = $('#phone').val();
-        let card = $('#card').val();
+        let name = $('#order_name').val();
+        let count = $('#order_count').val();
+        let address = $('#order_address').val();
+        let phone = $('#order_phone').val();
+        let item = '락앤락';
 
         $.ajax({
           type: "POST",
           url: "http://spartacodingclub.shop/order",
-          data: { name_give:name, count_give:count, address_give:address, phone_give:phone, card_give:card },
+          data: { item_give: item, name_give: name, count_give: count, address_give: address, phone_give: phone},
           success: function(response){
             if(response['result'] == 'success'){
               alert('주문 완료!');
@@ -39,13 +41,13 @@
       function listing() {
         $.ajax({
           type: "GET",
-          url: "http://spartacodingclub.shop/order?item_give=양초",
+          url: "http://spartacodingclub.shop/order?item_give=락앤락",
           data: {},
           success: function(response){
              if (response['result'] == 'success') {
                let orders = response['orders'];
                for (let i = 0; i < orders.length; i++) {
-                 make_card(orders[i]['name'],orders[i]['card'],orders[i]['count'],orders[i]['address'],orders[i]['phone'])
+                 make_card(orders[i]['item'],orders[i]['name'],orders[i]['count'],orders[i]['address'],orders[i]['phone'])
                }
              } else {
                alert('기사를 받아오지 못했습니다');
@@ -54,13 +56,13 @@
         })
       }
 
-      function make_card(name,count,address,phone,card) {
+      function make_card(item,name,count,address,phone) {
         let temp_html = '<tr>\
+            <td>'+item+'</td>\
             <td>'+name+'</td>\
             <td>'+count+'</td>\
             <td>'+address+'</td>\
             <td>'+phone+'</td>\
-            <td>'+card+'</td>\
           </tr>';
         $('#orders-box').append(temp_html);
       }
@@ -69,7 +71,7 @@
 
 
 
-<link rel = "stylesheet" type = "text/css" href = "index.css"> 
+ 
 </head>
 <body>
 	<div id="squer" class='.zoom'> 
@@ -80,20 +82,44 @@
         </h1>
         <div class="mytitle">
           이름: 
-          <input id="name" type="text">
+          <input id="order_name" type="text">
           <hr>
           주소: 
-          <input id="address" type="text">
+          <input id="order_address" type="text">
           <hr>
           전화번호: 
-          <input id="phone"  type="text">
-          <hr> 
+          <input id="order_phone"  type="text">
+          <!-- <hr> 
           카드번호: 
-          <input id="card" type="text">
+          <input id="card" type="text"> -->
           <hr>
           수량:
-          <input id="count" type="text">
+          <input id="order_count" type="text">
         </div>
         <button onclick="report()" class="btn btn-primary">주문하기</button>
+
+        <div class="orders">
+        <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">상품명</th>
+            <th scope="col">이름</th>
+            <th scope="col">수량</th>
+            <th scope="col">주소</th>
+            <th scope="col">전화번호</th>
+          </tr>
+        </thead>
+        <tbody id="orders-box">
+          <tr>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+          
+        </tbody>
+      </table>
+      </div>
 </body>
 </html>
